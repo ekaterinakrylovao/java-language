@@ -1,66 +1,79 @@
-public class Stack {
+import java.util.Arrays;
 
-    private int maxSize;
-    private int[] stackArray;
+public class Stack<DataType> {
+    private Object[] stackArray;
     private int top;
 
-    public Stack(int size) {
-        maxSize = size;
-        stackArray = new int[maxSize];
+    public Stack() {
+        stackArray = new Object[0];
         top = -1;
     }
 
-    public void push(int value) {
-        if (top < maxSize - 1) {
-            stackArray[++top] = value;
-            System.out.println("Добавлен элемент: " + value);
-        } else {
-            System.out.println("Стек полон. Невозможно добавить элемент.");
-        }
+    public void push(DataType value) {
+        ensureCapacity(top + 2);
+        stackArray[++top] = value;
+        System.out.println("Добавлен элемент: " + value);
     }
 
-    public int pop() {
-        if (top >= 0) {
-            int value = stackArray[top--];
-            System.out.println("Удален элемент: " + value);
-            return value;
-        } else {
+    public DataType pop() {
+        if (isEmpty()) {
             System.out.println("Стек пуст. Невозможно удалить элемент.");
-            return -1;
+            return null;
         }
+
+        DataType value = (DataType) stackArray[top--];
+        System.out.println("Удален элемент: " + value);
+        return value;
     }
 
-    public int peek() {
-        if (top >= 0) {
-            return stackArray[top];
-        } else {
-            System.out.println("Стек пуст. Возвращается значение по умолчанию: " + -1);
-            return -1;
+    public DataType peek() {
+        if (isEmpty()) {
+            System.out.println("Стек пуст. Возвращается значение по умолчанию: " + null);
+            return null;
         }
+
+        return (DataType) stackArray[top];
     }
 
     public boolean isEmpty() {
         return top == -1;
     }
 
-    public boolean isFull() {
-        return top == maxSize - 1;
+    private void ensureCapacity(int minCapacity) {
+        int oldCapacity = stackArray.length;
+        if (minCapacity > oldCapacity) {
+            int newCapacity = Math.max(oldCapacity * 2, minCapacity);
+            stackArray = Arrays.copyOf(stackArray, newCapacity);
+        }
     }
 
     public static void main(String[] args) {
-        Stack stack = new Stack(5);
+        Stack<Integer> integerStack = new Stack<>();
 
-        stack.push(1);
-        stack.push(2);
-        stack.push(3);
+        integerStack.push(1);
+        integerStack.push(2);
+        integerStack.push(3);
 
-        System.out.println("Верхний элемент стека: " + stack.peek());
+        System.out.println("Верхний элемент стека: " + integerStack.peek());
 
-        stack.pop();
-        stack.pop();
-        stack.pop();
+        integerStack.pop();
+        integerStack.pop();
+        integerStack.pop();
 
-        System.out.println("Стек пуст: " + stack.isEmpty());
-        System.out.println("Стек полон: " + stack.isFull());
+        System.out.println("Стек пуст: " + integerStack.isEmpty());
+
+        Stack<String> stringStack = new Stack<>();
+
+        stringStack.push("One");
+        stringStack.push("Two");
+        stringStack.push("Three");
+
+        System.out.println("Верхний элемент стека: " + stringStack.peek());
+
+        stringStack.pop();
+        stringStack.pop();
+        stringStack.pop();
+
+        System.out.println("Стек пуст: " + stringStack.isEmpty());
     }
 }
